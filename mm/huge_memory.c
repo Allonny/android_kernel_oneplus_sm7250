@@ -2290,7 +2290,7 @@ void __split_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
 	struct mm_struct *mm = vma->vm_mm;
 	unsigned long haddr = address & HPAGE_PMD_MASK;
 	bool do_unlock_page = false;
-	pmd_t _pmd;
+	// pmd_t _pmd;
 
 	mmu_notifier_invalidate_range_start(mm, haddr, haddr + HPAGE_PMD_SIZE);
 	ptl = pmd_lock(mm, pmd);
