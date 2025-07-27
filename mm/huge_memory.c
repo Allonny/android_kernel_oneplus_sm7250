@@ -2427,7 +2427,7 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
 	}
 }
 
-static void unmap_page(struct page *page)
+static void unmap_page(struct page *page, struct vm_area_struct *vma)
 {
 	enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK | TTU_IGNORE_ACCESS |
 		TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD | TTU_SYNC;
@@ -2437,7 +2437,7 @@ static void unmap_page(struct page *page)
 	if (PageAnon(page))
 		ttu_flags |= TTU_SPLIT_FREEZE;
 
-	try_to_unmap(page, ttu_flags);
+	try_to_unmap(page, ttu_flags, vma);
 
 	VM_WARN_ON_ONCE_PAGE(page_mapped(page), page);
 }
@@ -2760,7 +2760,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
 	}
 
 	mlocked = PageMlocked(page);
-	unmap_page(head);
+	unmap_page(head, anon_vma);
 
 	/* Make sure the page is not on per-CPU pagevec as it takes pin */
 	if (mlocked)
